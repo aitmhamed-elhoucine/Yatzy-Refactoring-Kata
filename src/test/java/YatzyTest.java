@@ -10,7 +10,8 @@ public class YatzyTest {
         assertEquals(16, Yatzy.chance(3,3,4,5,1));
     }
 
-    @Test public void yatzy() {
+    @Test
+    public void yatzy() {
         assertEquals(50, Yatzy.yatzy(4,4,4,4,4));
         assertEquals(50, Yatzy.yatzy(6,6,6,6,6));
         assertEquals(0, Yatzy.yatzy(6,6,6,6,3));
@@ -18,7 +19,8 @@ public class YatzyTest {
         assertEquals(0, Yatzy.yatzy(1,1,1,2,1));
     }
 
-    @Test public void ones() {
+    @Test
+    public void ones() {
         assertEquals(1, Yatzy.ones(1,2,3,4,5));
         assertEquals(2, Yatzy.ones(1,2,1,4,5));
         assertEquals(0, Yatzy.ones(6,2,2,4,5));
