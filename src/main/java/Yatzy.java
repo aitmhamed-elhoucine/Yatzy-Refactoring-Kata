@@ -9,78 +9,51 @@ public class Yatzy {
     private static final List<Integer> LARGE_STRAIGHT_LIST = List.of(2,3,4,5,6);
     private static final List<Integer> SMALL_STRAIGHT_LIST = List.of(1,2,3,4,5);
 
+
     /**
      * The player scores the sum of all dice, no matter what they read
+     * @param sixSidedDiceRoll
+     * @return the sum of all dice
      */
-    public static int scoreChance(DiceRoll diceRoll) {
-        return diceRoll.sum();
+
+    public static int scoreChance(SixSidedDiceRoll sixSidedDiceRoll) {
+        return sixSidedDiceRoll.sum();
     }
 
     /**
      * Calculates the score for Yatzy.
      * Yatzy scores 50 points if all dice have the same number.
+     * @param sixSidedDiceRoll
+     * @return 50 or 0
      */
-    public static int scoreYatzy(DiceRoll diceRoll) {
-        if (diceRoll.countDistinct() == 1) {
+    public static int scoreYatzy(SixSidedDiceRoll sixSidedDiceRoll) {
+        if (sixSidedDiceRoll.countDistinct() == 1) {
             return YATZY_SCORE;
         }
         return ZERO_SCORE;
     }
 
     /**
-     * Calculates the score for ones.
-     * The player scores the sum of the dice that read one.
+     * Calculates the score for given side.
+     * The player scores the sum of the dice that read the given side.
+     * the given value must be greater or equal one and less or equal the number of edges
+     * @param sixSidedDiceRoll
+     * @param sideNumber
+     * @return the sum of the dice that read the given side
      */
-    public static int scoreOnes(DiceRoll diceRoll) {
-        return diceRoll.countDice(1);
+    public static int scoreSide(SixSidedDiceRoll sixSidedDiceRoll, int sideNumber) {
+        return sixSidedDiceRoll.scoreSide(sideNumber);
     }
 
-    /**
-     * Calculates the score for twos.
-     * The player scores the sum of the dice that read two.
-     */
-    public static int scoreTwos(DiceRoll diceRoll) {
-        return diceRoll.countDice(2);
-    }
-
-    /**
-     * Calculates the score for ones.
-     * The player scores the sum of the dice that read three.
-     */
-    public static int scoreThrees(DiceRoll diceRoll) {
-        return diceRoll.countDice(3);
-    }
-
-    /**
-     * Calculates the score for ones.
-     * The player scores the sum of the dice that read four.
-     */
-    public static int scoreFours(DiceRoll diceRoll) {
-        return diceRoll.countDice(4);
-    }
-
-    /**
-     * Calculates the score for ones.
-     * The player scores the sum of the dice that read five.
-     */
-    public static int scoreFives(DiceRoll diceRoll) {
-        return diceRoll.countDice(5);
-    }
-
-    /**
-     * Calculates the score for ones.
-     * The player scores the sum of the dice that read six.
-     */
-    public static int scoreSixes(DiceRoll diceRoll) {
-        return diceRoll.countDice(6);
-    }
 
     /**
      * Calculates the score for pair.
      * The player scores the sum of the two highest matching dice.
+     * @param sixSidedDiceRoll
+     * @return the sum of the two highest matching dice
      */
-    public static int scorePair(DiceRoll diceRoll) {
-        int pairValue = diceRoll.countOccurrences().entrySet().stream()
+    public static int scorePair(SixSidedDiceRoll sixSidedDiceRoll) {
+        int pairValue = sixSidedDiceRoll.countOccurrences().entrySet().stream()
             .filter(entry -> entry.getValue() >= 2)
             .mapToInt(Map.Entry::getKey)
             .max()
@@ -91,12 +64,14 @@ public class Yatzy {
     /**
      * Calculates the score for two pairs.
      * If there are two pairs of dice with the same number, the player scores the sum of these dice.
+     * @param sixSidedDiceRoll
+     * @return the score for two pairs.
      */
-    public static int scoreTwoPairs(DiceRoll diceRoll) {
+    public static int scoreTwoPairs(SixSidedDiceRoll sixSidedDiceRoll) {
         int numPairs = 0;
         int score = 0;
         for (int i = 1; i <= 6; i++) {
-            if (diceRoll.countOccurrences().getOrDefault(i, 0) >= 2) {
+            if (sixSidedDiceRoll.countOccurrences().getOrDefault(i, 0L) >= 2) {
                 numPairs++;
                 score += i * 2;
             }
@@ -107,44 +82,54 @@ public class Yatzy {
     /**
      * Calculates the score for three of a kind.
      * If there are three dice with the same number, the player scores the sum of these dice.
+     * @param sixSidedDiceRoll
+     * @return the score for three of a kind.
      */
-    public static int scoreThreeOfAKind(DiceRoll diceRoll) {
-        return diceRoll.calculateKindScore(3);
+    public static int scoreThreeOfAKind(SixSidedDiceRoll sixSidedDiceRoll) {
+        return sixSidedDiceRoll.calculateKindScore(3);
     }
 
     /**
      * Calculates the score for four of a kind.
      * If there are four dice with the same number, the player scores the sum of these dice.
+     * @param sixSidedDiceRoll
+     * @return the score for four of a kind.
      */
-    public static int scoreFourOfAKind(DiceRoll diceRoll) {
-        return diceRoll.calculateKindScore(4);
+    public static int scoreFourOfAKind(SixSidedDiceRoll sixSidedDiceRoll) {
+        return sixSidedDiceRoll.calculateKindScore(4);
     }
 
 
     /**
      * Calculates the score for large straight.
-     * When placed on "large straight", if the dice read 2,3,4,5,6, the player scores 20 (the sum of all the dice).
+     * When placed on "small straight", if the dice read 1,2,3,4,5, the player scores 15 (the sum of all the dice).
+     * @param sixSidedDiceRoll
+     * @return 15 or 0
      */
-    public static int scoreSmallStraight(DiceRoll diceRoll) {
-        return diceRoll.calculateStraight(SMALL_STRAIGHT_LIST, SMALL_STRAIGHT_SCORE);
+    public static int scoreSmallStraight(SixSidedDiceRoll sixSidedDiceRoll) {
+        return sixSidedDiceRoll.calculateStraight(SMALL_STRAIGHT_LIST, SMALL_STRAIGHT_SCORE);
     }
 
     /**
      * Calculates the score for large straight.
      * When placed on "large straight", if the dice read 2,3,4,5,6, the player scores 20 (the sum of all the dice).
+     * @param sixSidedDiceRoll
+     * @return 20 or 0
      */
-    public static int scoreLargeStraight(DiceRoll diceRoll) {
-        return diceRoll.calculateStraight(LARGE_STRAIGHT_LIST, LARGE_STRAIGHT_SCORE);
+    public static int scoreLargeStraight(SixSidedDiceRoll sixSidedDiceRoll) {
+        return sixSidedDiceRoll.calculateStraight(LARGE_STRAIGHT_LIST, LARGE_STRAIGHT_SCORE);
     }
 
     /**
      * Calculates the score for full house.
      * If the dice are two of a kind and three of a kind, the player scores the sum of all the dice.
+     * @param sixSidedDiceRoll
+     * @return the score for full house
      */
-    public static int scoreFullHouse(DiceRoll diceRoll) {
-        return scorePair(diceRoll) != ZERO_SCORE
-            && scoreThreeOfAKind(diceRoll) != ZERO_SCORE
-            && scoreYatzy(diceRoll) == ZERO_SCORE  ? scoreChance(diceRoll) : ZERO_SCORE;
+    public static int scoreFullHouse(SixSidedDiceRoll sixSidedDiceRoll) {
+        return scorePair(sixSidedDiceRoll) != ZERO_SCORE
+            && scoreThreeOfAKind(sixSidedDiceRoll) != ZERO_SCORE
+            && scoreYatzy(sixSidedDiceRoll) == ZERO_SCORE  ? scoreChance(sixSidedDiceRoll) : ZERO_SCORE;
     }
 }
 
