@@ -1,3 +1,5 @@
+package entities;
+
 public enum Side {
     ONE(1),
     TWO(2),
